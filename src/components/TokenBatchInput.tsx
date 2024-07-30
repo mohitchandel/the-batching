@@ -31,10 +31,17 @@ export const TokenBatchInput = () => {
   };
 
   const sendTransaction = async () => {
-    const etherValueArray: bigint[] = valuesArray.map((value) =>
-      parseEther(value)
+    const tokenDecimals = await publicClient.readContract({
+      address: tokenAddress as Address,
+      abi: erc20Abi,
+      functionName: "decimals",
+    });
+    const tokenValueArray: bigint[] = valuesArray.map((value) =>
+      tokenDecimals == 18
+        ? parseEther(value)
+        : BigInt(Number(value) * 10 ** tokenDecimals)
     );
-    const totalValue = etherValueArray.reduce(
+    const totalValue = tokenValueArray.reduce(
       (acc, cur) => acc + cur,
       BigInt(0)
     );
@@ -47,6 +54,8 @@ export const TokenBatchInput = () => {
       toast.error("Please fill all the fields");
       return;
     }
+
+    setIsLoading(true);
 
     const allowance = await publicClient.readContract({
       address: tokenAddress as Address,
@@ -69,14 +78,13 @@ export const TokenBatchInput = () => {
       await walletClient.writeContract(request);
     }
 
-    setIsLoading(true);
     try {
       const { request } = await publicClient.simulateContract({
         account: walletAddress,
         address: CONTRACT_ADDRESS,
         abi: BatchingABI,
         functionName: "batchTokenTransactions",
-        args: [tokenAddress, addressesArray, etherValueArray],
+        args: [tokenAddress, addressesArray, tokenValueArray],
       });
       console.log(request);
       await walletClient
