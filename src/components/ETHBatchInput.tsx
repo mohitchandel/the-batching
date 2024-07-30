@@ -7,7 +7,7 @@ import { parseEther } from "viem";
 import toast from "react-hot-toast";
 
 export const ETHBatchInput = () => {
-  const { address: walletAddress } = useAccount();
+  const { address: walletAddress, isConnected } = useAccount();
   const CONTRACT_ADDRESS = "0xE6BFBB88b579ed198ddeC485abaBb8f5a556666F";
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -59,7 +59,13 @@ export const ETHBatchInput = () => {
         args: [addressesArray, etherValueArray],
         value: totalValue,
       });
-      await walletClient.writeContract(request);
+      await walletClient
+        .writeContract(request)
+        .then(() =>
+          toast.success(
+            "Transaction Successful, recipients will receive amount soon"
+          )
+        );
     } catch (error) {
       console.error("Transaction failed:", error);
       toast.error("Something went wrong");
@@ -88,19 +94,25 @@ export const ETHBatchInput = () => {
     <>
       <h1 className="text-center text-xl py-4 mt-5">ETH Batch Transaction</h1>
       <div className="flex justify-center gap-4 mt-5">
-        <button
-          className="btn btn-active btn-neutral w-2/5"
-          onClick={sendTransaction}
-        >
-          {isLoading ? (
-            <span className="loading loading-spinner"></span>
-          ) : (
-            <>
-              Send Transaction
-              <ArrowButton />
-            </>
-          )}
-        </button>
+        {isConnected && walletAddress ? (
+          <button
+            className="btn btn-active btn-neutral w-2/5"
+            onClick={sendTransaction}
+          >
+            {isLoading ? (
+              <span className="loading loading-spinner"></span>
+            ) : (
+              <>
+                Send Transaction
+                <ArrowButton />
+              </>
+            )}
+          </button>
+        ) : (
+          <button className="disable btn btn-active btn-neutral w-2/5">
+            Please connect wallet first
+          </button>
+        )}
       </div>
       <div className="flex justify-center gap-4 mt-4">
         <div className="flex flex-col mt-5">
