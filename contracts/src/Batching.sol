@@ -1,16 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "openzeppelin-contracts/contracts/token/ERC20/ERC20.sol";
+import "openzeppelin-contracts/contracts/token/ERC20/IERC20.sol";
 
 contract Batching {
     address public owner;
-    ERC20 token;
-
-    constructor(ERC20 _token) {
-        owner = msg.sender;
-        token = _token;
-    }
 
     receive() external payable {}
 
@@ -52,6 +46,7 @@ contract Batching {
      * @param amounts - The values or number of tokens persons will recieve
      */
     function batchTokenTransactions(
+        IERC20 _token,
         address[] memory persons,
         uint256[] memory amounts
     ) external {
@@ -62,7 +57,7 @@ contract Batching {
 
         for (uint256 i = 0; i < persons.length; i++) {
             require(
-                token.transferFrom(msg.sender, persons[i], amounts[i]),
+                _token.transferFrom(msg.sender, persons[i], amounts[i]),
                 "Token transfer failed"
             );
         }

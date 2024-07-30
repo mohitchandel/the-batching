@@ -15,7 +15,7 @@ contract CounterTest is Test {
 
     function setUp() public {
         batchToken = new BatchToken();
-        batching = new Batching(batchToken);
+        batching = new Batching();
     }
 
     function test_Mint() public {
@@ -55,7 +55,7 @@ contract CounterTest is Test {
         values[0] = 10 ether;
         values[1] = 20 ether;
 
-        batching.batchTokenTransactions(persons, values);
+        batching.batchTokenTransactions(batchToken, persons, values);
 
         uint256 balanceOfYash = batchToken.balanceOf(yash);
         uint256 balanceOfAnkit = batchToken.balanceOf(ankit);
