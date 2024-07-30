@@ -1,36 +1,74 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Batching Contract
 
-## Getting Started
+This project implements a Solidity smart contract for batching Ethereum and ERC20 token transactions, along with a Next.js frontend for interacting with the contract.
 
-First, run the development server:
+### Smart Contract: Batching.sol
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+The Batching contract allows for efficient batching of multiple Ethereum and ERC20 token transactions in a single operation.
+
+contract Address : [0xE6BFBB88b579ed198ddeC485abaBb8f5a556666F](https://sepolia.etherscan.io/address/0xE6BFBB88b579ed198ddeC485abaBb8f5a556666F)
+
+#### Features
+
+- Batch ETH Transactions: Send ETH to multiple addresses in one transaction.
+- Batch ERC20 Token Transactions: Transfer ERC20 tokens to multiple addresses in one transaction.
+
+### Contract Functions
+
+**batchingETHTransactions**
+
+```solidity
+batchingETHTransactions(address[] memory persons, uint256[] memory values) external payable
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Sends ETH to multiple addresses in a single transaction.
+- `persons`: Array of recipient addresses.
+- `values`: Array of ETH amounts to send (in wei).
+- The total ETH sent must match the sum of values.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+**batchTokenTransactions**
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+```solidity
+ batchTokenTransactions(IERC20 _token, address[] memory persons, uint256[] memory amounts) external
+```
 
-## Learn More
+- Transfers ERC20 tokens to multiple addresses in a single transaction.
+- `_token`: Address of the ERC20 token contract.
+- `persons`: Array of recipient addresses.
+- `amounts`: Array of token amounts to send.
+- Requires approval for the contract to spend tokens on behalf of the sender.
 
-To learn more about Next.js, take a look at the following resources:
+### Frontend (Next.js)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The frontend is built using Next.js and allows users to interact with the Batching contract.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+#### Setup
 
-## Deploy on Vercel
+1. Clone the repository: `git clone https://github.com/mohitchandel/the-batching.git`
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+2. Install dependencies: `npm install`
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+#### Running the App
+
+`npm run dev`
+
+Visit http://localhost:3000 in your browser.
+
+#### Features
+
+- Connect wallet (e.g., MetaMask)
+- Input fields for batch ETH transactions
+- Input fields for batch ERC20 token transactions
+
+#### Interacting with the Contract
+
+**Batch ETH Transactions:**
+
+- Enter recipient addresses and corresponding ETH amounts.
+- Click "Send Transaction" to execute the transaction.
+
+**Batch Token Transactions:**
+
+- Enter the ERC20 token address.
+- Enter recipient addresses and corresponding token amounts.
+- Click "Send Transaction" to execute the transaction.
