@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 
 export const ETHBatchInput = () => {
   const { address: walletAddress } = useAccount();
-  const CONTRACT_ADDRESS = "0x73F18FF376AaEB6874Fdc83e3a1ba7C9311759e9";
+  const CONTRACT_ADDRESS = "0xE6BFBB88b579ed198ddeC485abaBb8f5a556666F";
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
